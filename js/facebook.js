@@ -31,61 +31,81 @@ export async function linkFacebookPage() {
     return new Promise((resolve, reject) => {
         FB.login((response) => {
             if (response.authResponse) {
-                const userAccessToken = response.authResponse.accessToken;
-                
-                // 1. Get list of pages the user manages
                 FB.api('/me/accounts', (pagesResponse) => {
                     if (pagesResponse && !pagesResponse.error) {
-                        // For simplicity, we take the first page. 
-                        // In a real app, you'd show a picker.
                         const page = pagesResponse.data[0];
                         if (page) {
                             savePageToken(page.id, page.access_token, page.name);
                             resolve(page);
                         } else {
-                            reject('No pages found');
+                            reject('No pages found. Make sure you are a Page Admin.');
                         }
+                    } else {
+                        reject(pagesResponse.error.message);
                     }
                 });
             } else {
                 reject('User cancelled login or did not fully authorize.');
             }
-        }, {scope: 'pages_messaging,pages_show_list,pages_manage_metadata'});
+        }, {scope: 'pages_messaging,pages_show_list,pages_manage_metadata,public_profile,email'});
     });
 }
 
-async function savePageToken(pageId, token, name) {
-    try {
-        await setDoc(doc(db, "settings", "facebook"), {
-            pageId: pageId,
-            accessToken: token,
-            pageName: name,
-            updatedAt: new Date().toISOString()
-        });
-        console.log("Facebook Page linked successfully!");
-    } catch (error) {
-        console.error("Error saving token:", error);
-    }
-}
-
-export async function getFacebookMessages(threadId) {
-    // This would typically use the stored Page Access Token
-    // For the UI demo, we'll return mock data if not connected
+export async function getFacebookConversations() {
     const settings = await getDoc(doc(db, "settings", "facebook"));
-    if (!settings.exists()) {
-        return getMockMessages();
-    }
+    if (!settings.exists()) return [];
     
-    const token = settings.data().accessToken;
-    // Real API call:
-    // return fetch(`https://graph.facebook.com/v18.0/${threadId}/messages?access_token=${token}`)
-    //     .then(res => res.json());
+    const { pageId, accessToken } = settings.data();
+    
+    return new Promise((resolve) => {
+        FB.api(`/${pageId}/conversations`, { access_token: accessToken, fields: 'id,participants,updated_time,unread_count,messages.limit(1){message,from,created_time}' }, (response) => {
+            if (response && !response.error) {
+                resolve(response.data);
+            } else {
+                console.error("FB Conversations Error:", response.error);
+                resolve([]);
+            }
+        });
+    });
 }
 
-function getMockMessages() {
-    return [
-        { id: '1', text: 'Hi, I have a question about my order.', from: 'customer', time: '10:30 AM' },
-        { id: '2', text: 'Hello! I would be happy to help. What is your order number?', from: 'rep', time: '10:32 AM' },
-        { id: '3', text: 'It is #4521. Is it shipped yet?', from: 'customer', time: '10:35 AM' }
-    ];
+export async function getFacebookMessages(conversationId) {
+    const settings = await getDoc(doc(db, "settings", "facebook"));
+    if (!settings.exists()) return [];
+    
+    const { accessToken } = settings.data();
+    
+    return new Promise((resolve) => {
+        FB.api(`/${conversationId}/messages`, { access_token: accessToken, fields: 'id,message,from,created_time' }, (response) => {
+            if (response && !response.error) {
+                // The API returns messages in reverse order (newest first for some endpoints)
+                // We'll normalize it for the UI
+                resolve(response.data.reverse());
+            } else {
+                console.error("FB Messages Error:", response.error);
+                resolve([]);
+            }
+        });
+    });
+}
+
+export async function sendFacebookMessage(conversationId, text) {
+    const settings = await getDoc(doc(db, "settings", "facebook"));
+    if (!settings.exists()) return;
+    
+    const { accessToken } = settings.data();
+    
+    return new Promise((resolve, reject) => {
+        FB.api(`/${conversationId}/messages`, 'POST', {
+            access_token: accessToken,
+            message: text
+        }, (response) => {
+            if (response && !response.error) {
+                resolve(response);
+            } else {
+                console.error("FB Send Error:", response.error);
+                reject(response.error);
+            }
+        });
+    });
 }

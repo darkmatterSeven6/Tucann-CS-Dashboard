@@ -1,46 +1,74 @@
 // Inbox UI Logic
-import { getFacebookMessages } from './facebook.js';
+import { getFacebookConversations, getFacebookMessages, sendFacebookMessage } from './facebook.js';
 
 const threadList = document.getElementById('thread-list');
 const chatMessages = document.getElementById('chat-messages');
 const messageForm = document.getElementById('message-form');
 const messageInput = document.getElementById('message-input');
 const currentUserName = document.getElementById('current-user-name');
+const refreshBtn = document.getElementById('refresh-convos');
 
 let activeThreadId = null;
-
-const mockThreads = [
-    { id: 't1', name: 'Alex Johnson', preview: 'Is it shipped yet?', time: '5m' },
-    { id: 't2', name: 'Sarah Miller', preview: 'Thank you for the help!', time: '1h' },
-    { id: 't3', name: 'John Doe', preview: 'How do I return this?', time: '2h' }
-];
+let allThreads = [];
 
 export function initInbox() {
-    renderThreads(mockThreads);
+    loadConversations();
     
-    messageForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const text = messageInput.value.trim();
-        if (text && activeThreadId) {
-            sendMessage(text);
-            messageInput.value = '';
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', loadConversations);
+    }
+
+    if (messageForm) {
+        messageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = messageInput.value.trim();
+            if (text && activeThreadId) {
+                try {
+                    await sendFacebookMessage(activeThreadId, text);
+                    const sentMsg = { id: Date.now(), message: text, from: { id: 'me' } };
+                    messageInput.value = '';
+                    appendMessage(sentMsg);
+                } catch (err) {
+                    alert("Failed to send message: " + err.message);
+                }
+            }
+        });
+    }
+}
+
+async function loadConversations() {
+    if (threadList) threadList.innerHTML = '<div class="loading-shimmer"></div>';
+    
+    try {
+        allThreads = await getFacebookConversations();
+        if (allThreads.length === 0) {
+            threadList.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-secondary);">No conversations found. Connect a Page in Settings.</div>';
+        } else {
+            renderThreads(allThreads);
         }
-    });
+    } catch (err) {
+        console.error("Load Conversations Error:", err);
+        threadList.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--error-color);">Error loading conversations.</div>';
+    }
 }
 
 function renderThreads(threads) {
     threadList.innerHTML = '';
     threads.forEach(thread => {
+        const participant = thread.participants?.data[0] || { name: 'Unknown' };
+        const lastMsg = thread.messages?.data[0]?.message || 'No messages';
+        const time = new Date(thread.updated_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
         const div = document.createElement('div');
         div.className = `thread-item ${activeThreadId === thread.id ? 'active' : ''}`;
         div.innerHTML = `
-            <div class="thread-avatar">${thread.name.charAt(0)}</div>
+            <div class="thread-avatar">${participant.name.charAt(0)}</div>
             <div class="thread-info">
                 <div class="thread-top">
-                    <span class="thread-name">${thread.name}</span>
-                    <span class="thread-time">${thread.time}</span>
+                    <span class="thread-name">${participant.name}</span>
+                    <span class="thread-time">${time}</span>
                 </div>
-                <div class="thread-preview">${thread.preview}</div>
+                <div class="thread-preview">${lastMsg}</div>
             </div>
         `;
         div.onclick = () => selectThread(thread);
@@ -50,41 +78,32 @@ function renderThreads(threads) {
 
 async function selectThread(thread) {
     activeThreadId = thread.id;
-    currentUserName.textContent = thread.name;
-    renderThreads(mockThreads); // Update active state
+    const participant = thread.participants?.data[0] || { name: 'Unknown' };
+    currentUserName.textContent = participant.name;
+    renderThreads(allThreads); // Update active state
     
-    chatMessages.innerHTML = '<div class="loading">Loading messages...</div>';
+    chatMessages.innerHTML = '<div class="loading-shimmer"></div>';
     
-    // Simulate API delay
-    setTimeout(() => {
-        const messages = [
-            { id: 'm1', text: 'Hi, I have a question about my order.', type: 'received' },
-            { id: 'm2', text: thread.preview, type: 'received' }
-        ];
+    try {
+        const messages = await getFacebookMessages(thread.id);
         renderMessages(messages);
-    }, 500);
+    } catch (err) {
+        chatMessages.innerHTML = '<div class="error">Error loading messages.</div>';
+    }
 }
 
 function renderMessages(messages) {
     chatMessages.innerHTML = '';
     messages.forEach(msg => {
-        const div = document.createElement('div');
-        div.className = `message ${msg.type}`;
-        div.textContent = msg.text;
-        chatMessages.appendChild(div);
+        appendMessage(msg);
     });
-    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function sendMessage(text) {
-    const msg = { id: Date.now().toString(), text: text, type: 'sent' };
-    const messages = Array.from(chatMessages.querySelectorAll('.message')).map(m => ({
-        text: m.textContent,
-        type: m.classList.contains('sent') ? 'sent' : 'received'
-    }));
-    messages.push(msg);
-    renderMessages(messages);
-    
-    // In a real app, you would POST to Facebook API here
-    console.log(`Sending to FB: ${text}`);
+function appendMessage(msg) {
+    const isFromMe = msg.from?.id === 'me' || (activeThreadId && msg.from?.id !== activeThreadId); 
+    const div = document.createElement('div');
+    div.className = `message ${isFromMe ? 'sent' : 'received'}`;
+    div.textContent = msg.message;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }

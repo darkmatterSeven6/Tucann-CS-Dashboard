@@ -195,16 +195,44 @@
                                 <button>Assigned</button>
                             </div>
                             
-                            <div class="convos-list" id="convos-list">
+                            <div class="convos-list" id="thread-list">
                                 <div class="loading-shimmer"></div>
                             </div>
                         </div>
 
-                        <div class="chat-area" id="chat-area">
-                            <div class="no-selection">
-                                <i class="far fa-comments"></i>
-                                <h3>Select a conversation</h3>
-                                <p>Choose a customer from the left to start messaging</p>
+                        <div class="chat-area">
+                            <div class="chat-header">
+                                <div class="user-info">
+                                    <div class="avatar-placeholder" id="current-thread-avatar"></div>
+                                    <div class="user-details">
+                                        <h4 id="current-user-name">Select a conversation</h4>
+                                        <p id="current-user-status">Online</p>
+                                    </div>
+                                </div>
+                                <div class="chat-actions">
+                                    <button class="icon-btn"><i class="fas fa-phone"></i></button>
+                                    <button class="icon-btn"><i class="fas fa-video"></i></button>
+                                    <button class="icon-btn"><i class="fas fa-info-circle"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="chat-messages" id="chat-messages">
+                                <div class="no-selection">
+                                    <i class="far fa-comments"></i>
+                                    <h3>Select a conversation</h3>
+                                    <p>Choose a customer from the left to start messaging</p>
+                                </div>
+                            </div>
+
+                            <div class="chat-input-area">
+                                <form id="message-form">
+                                    <button type="button" class="icon-btn"><i class="far fa-smile"></i></button>
+                                    <button type="button" class="icon-btn"><i class="fas fa-paperclip"></i></button>
+                                    <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+                                    <button type="submit" class="send-btn">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
 
@@ -227,7 +255,7 @@
                                 <div id="fb-status" class="status-indicator disconnected">
                                     <span>Disconnected</span>
                                 </div>
-                                <button id="fb-connect-btn" class="btn btn-facebook">
+                                <button id="fb-connect-btn" class="btn btn-facebook role-restricted" data-role="admin">
                                     <i class="fab fa-facebook"></i> Connect Page
                                 </button>
                             </div>
