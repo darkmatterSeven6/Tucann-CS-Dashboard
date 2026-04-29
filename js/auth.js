@@ -10,8 +10,10 @@ import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/f
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 const loginScreen = document.getElementById('login-screen');
-const dashboard = document.getElementById('dashboard');
+const registerScreen = document.getElementById('register-screen');
+const dashboard = document.getElementById('main-dashboard');
 const loginError = document.getElementById('login-error');
+const registerError = document.getElementById('register-error');
 const logoutBtn = document.getElementById('logout-btn');
 
 const showRegister = document.getElementById('show-register');
@@ -67,46 +69,52 @@ function applyRoleRestrictions() {
 // Toggle Forms
 showRegister.addEventListener('click', (e) => {
     e.preventDefault();
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'block';
+    loginScreen.classList.remove('active');
+    registerScreen.classList.add('active');
 });
 
 showLogin.addEventListener('click', (e) => {
     e.preventDefault();
-    registerForm.style.display = 'none';
-    loginForm.style.display = 'block';
+    registerScreen.classList.remove('active');
+    loginScreen.classList.add('active');
 });
 
 // Registration Handler
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = document.getElementById('reg-name').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
+    const firstName = document.getElementById('register-firstname').value;
+    const lastName = document.getElementById('register-lastname').value;
+    const username = document.getElementById('register-username').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
     
-    loginError.textContent = '';
+    if (registerError) registerError.textContent = '';
     
     try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         
         // Check if this is the first user
-        const usersSnap = await getDoc(doc(db, "settings", "stats"));
+        const statsRef = doc(db, "settings", "stats");
+        const statsSnap = await getDoc(statsRef);
+        
         let role = 'standard';
         
-        if (!usersSnap.exists()) {
+        if (!statsSnap.exists()) {
             role = 'superuser'; // First user is Owner
-            await setDoc(doc(db, "settings", "stats"), { firstUserCreated: true });
+            await setDoc(statsRef, { firstUserCreated: true });
         }
 
         await setDoc(doc(db, "users", cred.user.uid), {
-            name: name,
+            firstName: firstName,
+            lastName: lastName,
+            username: username,
             email: email,
             role: role,
             createdAt: new Date().toISOString()
         });
         
     } catch (error) {
-        loginError.textContent = error.message;
+        if (registerError) registerError.textContent = error.message;
         console.error("Registration Error:", error);
     }
 });
@@ -134,12 +142,12 @@ logoutBtn.addEventListener('click', () => {
 
 function showDashboard() {
     loginScreen.classList.remove('active');
+    registerScreen.classList.remove('active');
     dashboard.classList.add('active');
 }
 
 function showLogin() {
     dashboard.classList.remove('active');
+    registerScreen.classList.remove('active');
     loginScreen.classList.add('active');
-    loginForm.style.display = 'block';
-    registerForm.style.display = 'none';
 }

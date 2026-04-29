@@ -25,6 +25,7 @@
                 </div>
                 <h2>Welcome Back</h2>
                 <p>Sign in to manage customer conversations</p>
+                <p id="login-error" class="error-message" style="color: #ff6b6b; font-size: 0.9rem; text-align: center; margin-bottom: 1rem; min-height: 1.2rem;"></p>
                 
                 <form id="login-form">
                     <div class="form-group">
@@ -67,15 +68,32 @@
                     <i class="fab fa-facebook-messenger"></i>
                     <span>RepPortal</span>
                 </div>
-                <h2>Create Account</h2>
+                <h2>Register as an Agent.</h2>
                 <p>Join the customer service team</p>
+                <p id="register-error" class="error-message" style="color: #ff6b6b; font-size: 0.9rem; text-align: center; margin-bottom: 1rem; min-height: 1.2rem;"></p>
                 
                 <form id="register-form">
                     <div class="form-group">
-                        <label for="register-name">Full Name</label>
+                        <label for="register-firstname">First Name</label>
                         <div class="input-wrapper">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="register-name" placeholder="John Doe" required>
+                            <input type="text" id="register-firstname" placeholder="First Name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-lastname">Last Name</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="register-lastname" placeholder="Last Name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-at"></i>
+                            <input type="text" id="register-username" placeholder="Username" required>
                         </div>
                     </div>
                     
@@ -95,7 +113,7 @@
                         </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    <button type="submit" class="btn btn-primary btn-block">Submit Registration</button>
                 </form>
                 
                 <div class="login-footer">
