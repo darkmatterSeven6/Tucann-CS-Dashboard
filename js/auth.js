@@ -141,6 +141,24 @@ logoutBtn.addEventListener('click', () => {
     signOut(auth).catch(err => console.error("Logout Error:", err));
 });
 
+// Password Visibility Toggles
+function setupPasswordToggle(toggleId, inputId) {
+    const toggle = document.getElementById(toggleId);
+    const input = document.getElementById(inputId);
+    
+    if (toggle && input) {
+        toggle.addEventListener('click', () => {
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            toggle.classList.toggle('fa-eye');
+            toggle.classList.toggle('fa-eye-slash');
+        });
+    }
+}
+
+setupPasswordToggle('toggle-login-password', 'login-password');
+setupPasswordToggle('toggle-register-password', 'register-password');
+
 function renderDashboardScreen() {
     loginScreen.classList.remove('active');
     registerScreen.classList.remove('active');

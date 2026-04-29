@@ -64,7 +64,7 @@ h1, h2, h3, h4, .logo {
 .login-card {
     width: 100%;
     max-width: 440px;
-    padding: 3rem 2.5rem;
+    padding: 2rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     text-align: center;
 }
@@ -73,7 +73,7 @@ h1, h2, h3, h4, .logo {
     font-size: 2rem;
     font-weight: 700;
     color: var(--fb-blue);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -88,12 +88,12 @@ h1, h2, h3, h4, .logo {
 
 .login-card p {
     color: var(--text-secondary);
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
 }
 
 .form-group {
     text-align: left;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .form-group label {
@@ -141,9 +141,23 @@ h1, h2, h3, h4, .logo {
     color: var(--accent-color);
 }
 
+.password-toggle {
+    position: absolute;
+    right: 1.25rem;
+    left: auto !important;
+    color: var(--text-secondary);
+    cursor: pointer;
+    pointer-events: auto !important;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: var(--text-primary);
+}
+
 .btn-block {
     width: 100%;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 
 .btn {
