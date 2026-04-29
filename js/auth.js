@@ -6,7 +6,7 @@ import {
     signOut, 
     onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
@@ -26,6 +26,13 @@ export let currentUserRole = 'standard';
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         await fetchUserRole(user.uid);
+        
+        // Update user status to online
+        await updateDoc(doc(db, "users", user.uid), {
+            status: 'online',
+            lastActive: new Date().toLocaleString()
+        });
+
         renderDashboardScreen();
         applyRoleRestrictions();
     } else {
@@ -145,8 +152,19 @@ loginForm.addEventListener('submit', async (e) => {
 });
 
 // Logout Handler
-logoutBtn.addEventListener('click', () => {
-    signOut(auth).catch(err => console.error("Logout Error:", err));
+logoutBtn.addEventListener('click', async () => {
+    try {
+        const user = auth.currentUser;
+        if (user) {
+            await updateDoc(doc(db, "users", user.uid), {
+                status: 'offline',
+                lastActive: new Date().toLocaleString()
+            });
+        }
+        await signOut(auth);
+    } catch (err) {
+        console.error("Logout Error:", err);
+    }
 });
 
 // Password Visibility Toggles

@@ -152,6 +152,10 @@
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </li>
+                        <li data-view="admin" class="role-restricted" data-role="admin">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Admin Console</span>
+                        </li>
                     </ul>
                 </nav>
                 
@@ -245,7 +249,92 @@
                         </div>
                     </div>
                 </section>
+                <section id="admin-view" class="view">
+                    <div class="admin-container p-4">
+                        <div class="view-header">
+                            <h1>Team Management</h1>
+                            <button class="btn btn-primary" id="open-create-user-modal">
+                                <i class="fas fa-user-plus"></i> Create New Agent
+                            </button>
+                        </div>
+                        
+                        <div class="admin-stats-grid grid-3">
+                            <div class="stat-card glass">
+                                <span class="stat-label">Total Agents</span>
+                                <span class="stat-value" id="total-agents-count">0</span>
+                            </div>
+                            <div class="stat-card glass">
+                                <span class="stat-label">Online Now</span>
+                                <span class="stat-value" id="online-agents-count">0</span>
+                            </div>
+                            <div class="stat-card glass">
+                                <span class="stat-label">System Status</span>
+                                <span class="stat-value text-success">Healthy</span>
+                            </div>
+                        </div>
+
+                        <div class="table-container glass mt-4">
+                            <table class="team-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Last Active</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="team-table-body">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
             </main>
+        </div>
+    </div>
+
+    <!-- Create User Modal -->
+    <div id="create-user-modal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2>Create New Agent</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="create-user-form">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="new-user-firstname" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="new-user-lastname" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="new-user-username" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="new-user-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="new-user-password" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="new-user-role">
+                        <option value="standard">Standard Agent</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Agent Account</button>
+            </form>
         </div>
     </div>
 
