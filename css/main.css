@@ -54,7 +54,7 @@ h1, h2, h3, h4, .logo {
 }
 
 /* Login Screen */
-#login-screen {
+#login-screen, #register-screen {
     justify-content: center;
     align-items: center;
     background: radial-gradient(circle at top right, #1e293b, #0f172a);
