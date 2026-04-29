@@ -1,5 +1,5 @@
 // Facebook Graph API Integration
-import { db } from './firebase-config.js';
+const db = window.db;
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const FB_SDK_URL = 'https://connect.facebook.net/en_US/sdk.js';

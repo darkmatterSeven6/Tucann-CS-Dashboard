@@ -1,6 +1,6 @@
 import { initInbox } from './inbox.js';
 import { initFacebookSDK, linkFacebookPage } from './facebook.js';
-import { db } from './firebase-config.js';
+const db = window.db;
 import { collection, query, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {

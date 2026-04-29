@@ -1,4 +1,5 @@
-import { auth, db } from './firebase-config.js';
+const auth = window.auth;
+const db = window.db;
 import { 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword,
@@ -25,10 +26,10 @@ export let currentUserRole = 'standard';
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         await fetchUserRole(user.uid);
-        showDashboard();
+        renderDashboardScreen();
         applyRoleRestrictions();
     } else {
-        showLogin();
+        renderLoginScreen();
     }
 });
 
@@ -140,13 +141,13 @@ logoutBtn.addEventListener('click', () => {
     signOut(auth).catch(err => console.error("Logout Error:", err));
 });
 
-function showDashboard() {
+function renderDashboardScreen() {
     loginScreen.classList.remove('active');
     registerScreen.classList.remove('active');
     dashboard.classList.add('active');
 }
 
-function showLogin() {
+function renderLoginScreen() {
     dashboard.classList.remove('active');
     registerScreen.classList.remove('active');
     loginScreen.classList.add('active');
