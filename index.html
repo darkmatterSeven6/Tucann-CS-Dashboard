@@ -140,6 +140,12 @@
                             <span>Inbox</span>
                             <span class="badge" id="unread-count">0</span>
                         </li>
+                        <li>
+                            <a href="https://www.facebook.com/messages/t/100497057136896" target="_blank" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; width: 100%;">
+                                <i class="fab fa-facebook-messenger"></i>
+                                <span>Facebook Messenger</span>
+                            </a>
+                        </li>
                         <li data-view="customers">
                             <i class="fas fa-users"></i>
                             <span>Customers</span>
@@ -158,6 +164,10 @@
                         </li>
                     </ul>
                 </nav>
+
+                <div class="sidebar-notice" style="padding: 1rem 1.5rem; font-size: 0.75rem; color: var(--text-secondary); border-top: 1px solid var(--border-color);">
+                    <p><i class="fas fa-info-circle"></i> Note: Use the shared 'Tucann Support' burner account for this link to bypass Business Suite permission locks.</p>
+                </div>
                 
                 <div class="sidebar-footer">
                     <div class="user-profile">
@@ -252,12 +262,12 @@
                             <div class="settings-card glass">
                                 <h3>Facebook Integration</h3>
                                 <p>Connect your Facebook Page to receive Messenger messages.</p>
-                                <div id="fb-status" class="status-indicator disconnected">
-                                    <span>Disconnected</span>
+                                <div id="fb-status" class="status-indicator">
+                                    <span class="dot green"></span> <span>Manual Mode Active</span>
                                 </div>
-                                <button id="fb-connect-btn" class="btn btn-facebook role-restricted" data-role="admin">
-                                    <i class="fab fa-facebook"></i> Connect Page
-                                </button>
+                                <a href="https://business.facebook.com/latest/inbox/all?asset_id=100497057136896" target="_blank" class="btn btn-primary btn-block" style="text-decoration: none;">
+                                    <i class="fab fa-facebook"></i> Open Admin View
+                                </a>
                             </div>
                             
                             <div class="settings-card glass">

@@ -118,36 +118,10 @@ async function initApp() {
         console.warn("Facebook SDK failed to load (Check App ID and domain)");
     }
 
-    // Check existing FB connection
-    try {
-        const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
-        const settings = await getDoc(doc(db, "settings", "facebook"));
-        const status = document.getElementById('fb-status');
-        const fbConnectBtn = document.getElementById('fb-connect-btn');
-        
-        if (settings.exists()) {
-            const data = settings.data();
-            if (status) status.innerHTML = `<span class="dot green"></span> Connected to <strong>${data.pageName}</strong>`;
-            if (fbConnectBtn) fbConnectBtn.textContent = 'Change Connection';
-        }
-    } catch (err) {
-        console.error("Error checking FB status:", err);
-    }
-
-    // Settings logic
+    // Facebook logic (Manual Mode Active)
     const fbConnectBtn = document.getElementById('fb-connect-btn');
     if (fbConnectBtn) {
-        fbConnectBtn.addEventListener('click', async () => {
-            try {
-                const page = await linkFacebookPage();
-                const status = document.getElementById('fb-status');
-                if (status) status.innerHTML = `<span class="dot green"></span> Connected to <strong>${page.name}</strong>`;
-                fbConnectBtn.textContent = 'Change Connection';
-                alert("Facebook Page linked successfully!");
-            } catch (err) {
-                alert("Failed to connect to Facebook: " + err);
-            }
-        });
+        // Event listener removed as part of manual mode transition
     }
 }
 
