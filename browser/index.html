@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepPortal | Customer Service Hub</title>
+    <meta name="description" content="A unified customer service portal for Facebook Messenger and Shopify tracking.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/inbox.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-theme">
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen active">
+            <div class="login-card glass">
+                <div class="logo">
+                    <i class="fab fa-facebook-messenger"></i>
+                    <span>RepPortal</span>
+                </div>
+                <h2>Welcome Back</h2>
+                <p>Sign in to access the customer service hub</p>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="rep@company.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                </form>
+                <div id="login-error" class="error-msg"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard Layout (Hidden by default) -->
+        <div id="dashboard" class="screen">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo-sm">
+                        <i class="fab fa-facebook-messenger"></i>
+                        <span>RP</span>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="#" class="nav-item active" data-tab="inbox" id="nav-inbox">
+                        <i class="fas fa-inbox"></i>
+                        <span class="tooltip">Inbox</span>
+                    </a>
+                    <a href="#" class="nav-item" data-tab="shopify" id="nav-shopify">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="tooltip">Shopify</span>
+                    </a>
+                    <a href="#" class="nav-item" data-tab="settings" id="nav-settings">
+                        <i class="fas fa-cog"></i>
+                        <span class="tooltip">Settings</span>
+                    </a>
+                </nav>
+                <div class="sidebar-footer">
+                    <button id="logout-btn" class="nav-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <!-- Inbox Tab -->
+                <section id="inbox-tab" class="tab-content active">
+                    <div class="inbox-container">
+                        <div class="thread-list-pane">
+                            <div class="pane-header">
+                                <h3>Messages</h3>
+                                <div class="search-bar">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="Search conversations...">
+                                </div>
+                            </div>
+                            <div id="thread-list" class="thread-list">
+                                <!-- Threads will be injected here -->
+                                <div class="thread-skeleton"></div>
+                                <div class="thread-skeleton"></div>
+                                <div class="thread-skeleton"></div>
+                            </div>
+                        </div>
+                        <div class="chat-pane">
+                            <div id="chat-header" class="chat-header">
+                                <div class="user-info">
+                                    <div class="avatar-placeholder"></div>
+                                    <div class="user-details">
+                                        <h4 id="current-user-name">Select a conversation</h4>
+                                        <p id="current-user-status">Online</p>
+                                    </div>
+                                </div>
+                                <div class="chat-actions">
+                                    <button class="icon-btn"><i class="fas fa-info-circle"></i></button>
+                                </div>
+                            </div>
+                            <div id="chat-messages" class="chat-messages">
+                                <div class="empty-state">
+                                    <i class="far fa-comments"></i>
+                                    <p>Your messages will appear here</p>
+                                </div>
+                            </div>
+                            <div class="chat-input-area">
+                                <form id="message-form">
+                                    <button type="button" class="icon-btn"><i class="fas fa-plus"></i></button>
+                                    <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+                                    <button type="submit" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Shopify Tab (Placeholder) -->
+                <section id="shopify-tab" class="tab-content">
+                    <div class="placeholder-view">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h2>Shopify Tracking</h2>
+                        <p>Chargeback tracking and order management coming soon.</p>
+                    </div>
+                </section>
+
+                <!-- Settings Tab -->
+                <section id="settings-tab" class="tab-content">
+                    <div class="settings-view">
+                        <h2>Settings</h2>
+                        <div class="settings-section glass">
+                            <h3>Facebook Integration</h3>
+                            <p>Connect your business page to start receiving messages.</p>
+                            <button id="fb-connect-btn" class="btn-fb">
+                                <i class="fab fa-facebook"></i> Connect Facebook Page
+                            </button>
+                            <div id="fb-status" class="status-indicator">
+                                <span class="dot red"></span> Not Connected
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/facebook.js"></script>
+    <script type="module" src="js/inbox.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
