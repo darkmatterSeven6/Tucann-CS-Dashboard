@@ -37,11 +37,19 @@ async function fetchUserRole(uid) {
     try {
         const userDoc = await getDoc(doc(db, "users", uid));
         if (userDoc.exists()) {
-            currentUserRole = userDoc.data().role;
+            const data = userDoc.data();
+            currentUserRole = data.role;
+            
+            // Update UI
+            const displayName = document.getElementById('display-name');
+            const displayRole = document.getElementById('display-role');
+            const avatarInitial = document.getElementById('user-avatar-initial');
+            
+            if (displayName) displayName.textContent = `${data.firstName || ''} ${data.lastName || ''}`;
+            if (displayRole) displayRole.textContent = data.role;
+            if (avatarInitial) avatarInitial.textContent = (data.firstName || 'U').charAt(0).toUpperCase();
+            
         } else {
-            // First user becomes superuser (Owner)
-            // Note: This is a simple logic for setup. In production, 
-            // you'd set this manually in the console for the first user.
             currentUserRole = 'standard';
         }
     } catch (err) {

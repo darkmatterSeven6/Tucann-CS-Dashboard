@@ -8,30 +8,30 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initApp() {
-    // Tab Switching
-    const navItems = document.querySelectorAll('.nav-item[data-tab]');
-    const tabContents = document.querySelectorAll('.tab-content');
+    // View Switching
+    const navItems = document.querySelectorAll('.sidebar-nav li[data-view]');
+    const views = document.querySelectorAll('.view');
 
     navItems.forEach(item => {
         item.addEventListener('click', async (e) => {
             e.preventDefault();
-            const targetTab = item.getAttribute('data-tab');
+            const targetView = item.getAttribute('data-view');
 
             // Update Nav
             navItems.forEach(nav => nav.classList.remove('active'));
             item.classList.add('active');
 
-            // Update Tabs
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-                if (content.id === `${targetTab}-tab`) {
-                    content.classList.add('active');
+            // Update Views
+            views.forEach(view => {
+                view.classList.remove('active');
+                if (view.id === `${targetView}-view`) {
+                    view.classList.add('active');
                 }
             });
 
-            // Special Tab Logic
-            if (targetTab === 'team') {
-                loadTeamMembers();
+            // Special Logic
+            if (targetView === 'settings') {
+                // loadSettingsData(); 
             }
         });
     });
